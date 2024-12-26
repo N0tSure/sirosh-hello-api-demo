@@ -1,0 +1,31 @@
+openapi: '3.1.1'
+info:
+  title: 'Demo of static API key'
+  version: '0.1.0'
+paths:
+  '/api/hello':
+    get:
+      tags:
+        - 'Hello API'
+      summary: |
+        Returns 'Hello World!'
+      operationId: 'getHello'
+      responses:
+        200:
+          description: 'Hello acquired.'
+          content:
+            "text/plain":
+              schema:
+                type: string
+        401:
+          description: 'Authentication failed.'
+      security:
+        - helloApiKey: []
+
+components:
+  securitySchemes:
+    helloApiKey:
+      type: apiKey
+      description: 'Static key for all consumers'
+      name: 'X-HelloApiKey'
+      in: header
