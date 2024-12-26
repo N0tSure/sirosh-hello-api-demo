@@ -1,0 +1,33 @@
+### Must accept user w/ proper API key
+GET http://localhost:8080/api/hello
+X-HelloApiKey: foobarbaz
+
+> {%
+    client.test('Return successful HTTP status', () => {
+        client.assert(response.status === 200, 'HTTP status is not 200')
+    })
+
+ %}
+###
+
+### Must reject request w/o creds
+GET http://localhost:8080/api/hello
+
+> {%
+    client.test('Return Unauthorized HTTP status', () => {
+        client.assert(response.status === 401, 'HTTP status is not 401')
+    })
+ %}
+###
+
+### Must reject request w/ incorrect creds
+GET http://localhost:8080/api/hello
+X-HelloApiKey: bad
+
+> {%
+    client.test('Return Unauthorized HTTP status', () => {
+        client.assert(response.status === 401, 'HTTP status is not 401')
+    })
+%}
+###
+
