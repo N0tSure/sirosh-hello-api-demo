@@ -68,8 +68,8 @@ tasks.register('generateServer', GenerateTask) {
             'documentationProvider': 'none',
             'openApiNullable'      : 'false',
             'useSwaggerUI'         : 'false',
-            'useBeanValidation': 'false',
-            'useJakartaEe': 'true'
+            'useBeanValidation'    : 'false',
+            'useJakartaEe'         : 'true'
     ]
 }
 
@@ -83,8 +83,8 @@ tasks.register('generateClient', GenerateTask) {
     invokerPackage = cliPackageName
     library = 'resttemplate'
     configOptions = [
-            'useJakartaEe': 'true',
-            'openApiNullable'      : 'false',
+            'useJakartaEe'   : 'true',
+            'openApiNullable': 'false',
     ]
 }
 
