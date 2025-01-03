@@ -1,15 +1,36 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
+    id "org.openapi.generator" version "7.10.0"
 }
 
 group = 'com.sirosh.spsec'
-version = '0.0.1-SNAPSHOT'
+version = '0.1.0-SNAPSHOT'
+
+ext {
+    openApiSpecFile = "$rootDir/hello-api-spec.yml"
+    projectBasePackage = "${group}.key"
+}
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "$buildDir/generated/src/main/java"
+        }
+    }
+    test {
+        java {
+            srcDir "$buildDir/generated-cli/src/main/java"
+        }
     }
 }
 
@@ -23,6 +44,53 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.register('generateServer', GenerateTask) {
+    generatorName = 'spring'
+    inputSpec = project.openApiSpecFile
+    outputDir = layout.buildDirectory.file('generated').get().toString()
+    def webPackageName = "${project.projectBasePackage}.web"
+    apiPackage = webPackageName
+    invokerPackage = webPackageName
+    modelPackage = webPackageName
+    generateApiDocumentation = false
+    generateModelTests = false
+    generateApiTests = false
+
+    additionalProperties = [
+            apiNameSuffix: 'Hello'
+    ]
+    configOptions = [
+            'annotationLibrary'    : 'none',
+            'interfaceOnly'        : 'true',
+            'skipDefaultInterface' : 'true',
+            'documentationProvider': 'none',
+            'openApiNullable'      : 'false',
+            'useSwaggerUI'         : 'false',
+            'useBeanValidation': 'false',
+            'useJakartaEe': 'true'
+    ]
+}
+
+tasks.register('generateClient', GenerateTask) {
+    generatorName = 'java'
+    inputSpec = project.openApiSpecFile
+    outputDir = layout.buildDirectory.file('generated-cli').get().toString()
+    def cliPackageName = "${project.projectBasePackage}.client"
+    apiPackage = cliPackageName
+    modelPackage = cliPackageName
+    invokerPackage = cliPackageName
+    library = 'resttemplate'
+    configOptions = [
+            'useJakartaEe': 'true',
+            'openApiNullable'      : 'false',
+    ]
+}
+
+tasks.named('compileJava') {
+    dependsOn tasks.named('generateServer')
+    dependsOn tasks.named('generateClient')
 }
 
 tasks.named('test') {
