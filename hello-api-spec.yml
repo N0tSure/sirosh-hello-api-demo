@@ -3,10 +3,10 @@ info:
   title: 'Demo of static API key'
   version: '0.1.0'
 paths:
-  '/api/hello':
+  /api/hello:
     get:
       tags:
-        - 'Hello API'
+        - 'Hello'
       summary: |
         Returns 'Hello World!'
       operationId: 'getHello'
