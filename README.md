@@ -101,5 +101,3 @@ This project demonstrates:
 2. Configuring and retrieving application properties.
 3. Securing endpoints with custom authentication logic.
 4. Using OpenAPI for API documentation.
-
----
